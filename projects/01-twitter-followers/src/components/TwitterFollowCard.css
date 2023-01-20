@@ -1,0 +1,73 @@
+.item {
+  display: flex;
+  gap: 4rem;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.item-header {
+  display: flex;
+  gap: 1rem;
+}
+
+.item-header__avatar {
+  width: 65px;
+  height: 65px;
+  border-radius: 50%;
+}
+
+.user-info {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.user-info__username {
+  opacity: .6;
+}
+
+.item-aside__button {
+  cursor: pointer;
+  padding: 8px 16px;
+  border-radius: 20px;
+  font-weight: bold;
+  border: solid 1px #000;
+  transition: .3s ease background-color;
+}
+
+.item-aside__button:hover {
+  opacity: .8;
+}
+
+.item-aside__button.is-following {
+  border: solid 1px #bbb;
+  background: transparent;
+  color: #fff;
+  width: 120px;
+}
+
+.item-aside__button.is-following:hover {
+  background: rgb(255, 0, 0, 0.178);
+  color: red;
+  border: 1px solid red;
+  transition: .3s ease all;
+  opacity: 1;
+}
+
+.text-following {
+  display: block;
+}
+
+.item-aside__button.is-following:hover .text-following {
+  display: none;
+}
+
+.text-unfollowing {
+  display: none;
+}
+
+.item-aside__button.is-following:hover .text-unfollowing {
+  display: block;
+}
+
+
