@@ -2,13 +2,13 @@ import { TwitterUser } from "../models/user.interface";
 
 export const users: TwitterUser[] = [
   {
-    name: "League of Legends",
-    username: "leagueoflegends",
-    initialIsFollowed: false
+    name: "Angular",
+    username: "angular",
+    initialIsFollowed: true
   },
   {
-    name: "Midudev",
-    username: "midudev",
-    initialIsFollowed: true
-  }
+    name: "React",
+    username: "reactjs",
+    initialIsFollowed: false
+  },
 ];
