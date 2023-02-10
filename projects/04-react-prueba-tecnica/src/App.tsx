@@ -1,34 +1,16 @@
-import { useState, useEffect } from "react";
-import { CatFactsResponse } from "./models/cat-facts.interface";
-import { CatsImageResponse } from "./models/cats-image.interface";
 import styles from "./App.module.css";
-
-const CAT_ENDPOINT_RANDOM_FACT: string = "https://catfact.ninja/fact";
-// const CAT_ENDPOINT_IMAGE_URL: string = `https://cataas.com/cat/says/${"firstWord"}?size=50&color=red&json=true`;
-const CAT_PREFIX_IMAGE_URL = "https://cataas.com";
+import { useCatFact } from "./hooks/useCatFact";
+import { useCatImageUrl } from "./hooks/useCatImageUrl";
 
 const App = () => {
-  const [fact, setFact] = useState<string>("");
-  const [imageUrl, setImageUrl] = useState<string>("");
+  const { fact, refreshFact } = useCatFact();
+  const { imageUrl } = useCatImageUrl({ fact });
 
-  useEffect(() => {
-    fetch(CAT_ENDPOINT_RANDOM_FACT)
-      .then((res) => res.json())
-      .then((data: CatFactsResponse) => {
-        const { fact } = data;
-        setFact(fact);
+  // Efecto para obtener el 'hecho' al cargar mi componente
+  // Este efecto se quitó y se creó un custom hook para esto: 'useCatFact()'
 
-        const firstWord = fact.split(" ")[0];
-
-        fetch(
-          `https://cataas.com/cat/says/${firstWord}?size=50&color=red&json=true`
-        )
-          .then((resp) => resp.json())
-          .then((data: CatsImageResponse) => {
-            setImageUrl(data.url);
-          });
-      });
-  }, []);
+  // Efecto para obtener una imagen cada vez que tenemos un 'hecho' nuevo
+  // Este efecto se quitó y se creó un custom hook para esto: 'useCatImagUrl()'
 
   return (
     <main className={styles.mainContainer}>
@@ -37,11 +19,12 @@ const App = () => {
         {fact && <p>{fact}</p>}
         {imageUrl && (
           <img
-            src={`${CAT_PREFIX_IMAGE_URL}/${imageUrl}`}
+            src={imageUrl}
             alt={`Image extracted using the first word for ${fact}`}
           />
         )}
       </section>
+      <button onClick={refreshFact}>Get new fact</button>
     </main>
   );
 };
