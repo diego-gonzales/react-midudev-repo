@@ -1,15 +1,20 @@
 import "./App.css";
-import Movies from "./components/Movies";
+import Movies from "./components/Movies/Movies";
 import { useMovies } from "./hooks/useMovies";
+import debounce from "just-debounce-it";
 /*
-  useRef() te permite crear una referencia mutable que persiste durante todo el cicli de vida de tu componente. Útil para guardar cualquier valor que puedas mutar: un identificador, un elemento del DOM, un contador, etc. Cada vez que cambia no vuelve a renderizar el componente (esto lo diferencia del useState())
+  useRef() te permite crear una referencia mutable que persiste durante todo el ciclo de vida de tu componente. Útil para guardar cualquier valor que puedas mutar: un identificador, un elemento del DOM, un contador, etc. Cada vez que cambia no vuelve a renderizar el componente (esto lo diferencia del useState())
 */
-import { useRef } from "react";
+import { useRef, useState, useCallback } from "react";
 import { useSearch } from "./hooks/useSearch";
 
 function App() {
-  const { movies } = useMovies();
-  const { error, controlValue, setControlValue } = useSearch();
+  const [sort, setSort] = useState(false);
+  const { inputError, controlValue, setControlValue } = useSearch();
+  const { movies, getMovies, isLoading, error } = useMovies({
+    keyword: controlValue,
+    sort
+  });
   // const inputRef = useRef<HTMLInputElement>(null);
 
   /*
@@ -28,15 +33,29 @@ function App() {
     console.log(fields);
   }; */
 
+  const debounceGetMovies = useCallback(
+    debounce((inputValue: string) => {
+      console.log("searching...");
+      getMovies(inputValue);
+    }, 500),
+    []
+  );
+
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    console.log({ controlValue });
+    getMovies(controlValue);
   };
 
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const inputValue = event.target.value;
     if (inputValue.startsWith(" ")) return;
     setControlValue(inputValue);
+    const abc = debounce(() => inputValue);
+    debounceGetMovies(inputValue);
+  };
+
+  const handleSort = () => {
+    setSort(!sort);
   };
 
   return (
@@ -61,14 +80,13 @@ function App() {
             type="text"
             placeholder="Avengers, Fast and furious, etc."
           />
+          <input type="checkbox" checked={sort} onChange={handleSort} />
           <button type="submit">Search</button>
         </form>
-        {error && <p style={{ color: "red" }}>{error}</p>}
+        {inputError && <p style={{ color: "red" }}>{inputError}</p>}
       </header>
 
-      <main>
-        <Movies movies={movies} />
-      </main>
+      <main>{isLoading ? <p>Loading...</p> : <Movies movies={movies} />}</main>
     </div>
   );
 }

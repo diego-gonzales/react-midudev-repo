@@ -1,6 +1,9 @@
 .page {
   display: grid;
   place-items: center;
+  width: 100%;
+  max-width: 800px;
+  min-width: 320px;
 }
 
 form {
@@ -9,8 +12,9 @@ form {
   align-items: center;
 }
 
-/* main {
+main {
   display: flex;
   justify-content: center;
-} */
+  width: 100%;
+}
 

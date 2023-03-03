@@ -1,8 +1,9 @@
 import { useState, useEffect, useRef } from "react";
 
+// NOTA: Casi siempre que veas un useEffect() en tu código podría convertirse en custom hook
 export function useSearch() {
   const [controlValue, setControlValue] = useState("");
-  const [error, setError] = useState("");
+  const [inputError, setInputError] = useState("");
   const isFirstInput = useRef(true);
 
   useEffect(() => {
@@ -13,22 +14,22 @@ export function useSearch() {
     }
 
     if (controlValue === "") {
-      setError("You cannot search an empty movie");
+      setInputError("You cannot search an empty movie");
       return;
     }
 
     if (controlValue.match(/^\d+$/)) {
-      setError("You cannot search a movie with number");
+      setInputError("You cannot search a movie with number");
       return;
     }
 
     if (controlValue.length < 3) {
-      setError("You must enter at least 3 characters");
+      setInputError("You must enter at least 3 characters");
       return;
     }
 
-    setError("");
+    setInputError("");
   }, [controlValue]);
 
-  return { error, controlValue, setControlValue };
+  return { inputError, controlValue, setControlValue };
 }
