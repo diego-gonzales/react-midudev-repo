@@ -26,7 +26,12 @@ const Cart = () => {
                     <strong>{item.title}</strong> - ${item.price}
                   </div>
                   <footer>
-                    <button onClick={() => removeFromCart(item)}>🗑</button>
+                    <button
+                      title="Remove from cart"
+                      onClick={() => removeFromCart(item)}
+                    >
+                      🗑
+                    </button>
                     <small>Quantity: {item.quantity}</small>
                     <button
                       disabled={item.quantity === 1}
@@ -40,7 +45,7 @@ const Cart = () => {
               ))}
             </ul>
 
-            <button onClick={clearCart}>
+            <button title="Empty cart" onClick={clearCart}>
               <ClearCartIcon />
             </button>
           </>
