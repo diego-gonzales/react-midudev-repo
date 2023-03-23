@@ -3,6 +3,7 @@ import { getLocalStorage, setLocalStorage } from "../utils/localStorageUtil";
 
 export const CART_ACTION_TYPES = {
   ADD_TO_CART: "ADD_TO_CART",
+  REMOVE_ONE_FROM_CART: "REMOVE_ONE_FROM_CART",
   REMOVE_FROM_CART: "REMOVE_FROM_CART",
   CLEAR_CART: "CLEAR_CART",
 };
@@ -51,6 +52,20 @@ export const cartReducer = (state: any, action: any) => {
       }
 
       const newState = [...state, { ...actionPayload, quantity: 1 }];
+      setLocalStorage("cart", newState);
+      return newState;
+    }
+
+    case CART_ACTION_TYPES.REMOVE_ONE_FROM_CART: {
+      if (actionPayload.quantity === 1) return state;
+
+      const productInCartIndex = state.findIndex(
+        (prod: any) => prod.id === actionPayload.id
+      );
+
+      const newState = structuredClone(state);
+      newState[productInCartIndex].quantity -= 1;
+
       setLocalStorage("cart", newState);
       return newState;
     }

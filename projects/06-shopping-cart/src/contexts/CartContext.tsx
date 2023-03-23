@@ -13,6 +13,7 @@ interface CartProviderProps {
 interface ProviderProps {
   cart: Product[];
   addToCart: (product: Product) => void;
+  removeOneFromCart: (product: Product) => void;
   removeFromCart: (product: Product) => void;
   clearCart: () => void;
 }
@@ -20,11 +21,18 @@ interface ProviderProps {
 export const CartContext = createContext<ProviderProps | undefined>(undefined);
 
 export const CartProvider = ({ children }: CartProviderProps) => {
-  const { state, addToCart, removeFromCart, clearCart } = useCartReducer();
+  const { state, addToCart, removeOneFromCart, removeFromCart, clearCart } =
+    useCartReducer();
 
   return (
     <CartContext.Provider
-      value={{ cart: state, addToCart, removeFromCart, clearCart }}
+      value={{
+        cart: state,
+        addToCart,
+        removeOneFromCart,
+        removeFromCart,
+        clearCart,
+      }}
     >
       {children}
     </CartContext.Provider>
@@ -41,6 +49,13 @@ function useCartReducer() {
     });
   };
 
+  const removeOneFromCart = (product: Product) => {
+    dispatch({
+      type: CART_ACTION_TYPES.REMOVE_ONE_FROM_CART,
+      payload: product,
+    });
+  };
+
   const removeFromCart = (product: Product) => {
     dispatch({
       type: CART_ACTION_TYPES.REMOVE_FROM_CART,
@@ -50,7 +65,7 @@ function useCartReducer() {
 
   const clearCart = () => dispatch({ type: CART_ACTION_TYPES.CLEAR_CART });
 
-  return { state, addToCart, removeFromCart, clearCart };
+  return { state, addToCart, removeOneFromCart, removeFromCart, clearCart };
 }
 
 // Without reducer

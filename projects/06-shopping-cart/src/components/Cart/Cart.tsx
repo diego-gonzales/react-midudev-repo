@@ -5,7 +5,8 @@ import { useCart } from "../../hooks/useCart";
 
 const Cart = () => {
   const cartCheckboxID = useId();
-  const { cart, clearCart, addToCart } = useCart();
+  const { cart, clearCart, addToCart, removeOneFromCart, removeFromCart } =
+    useCart();
 
   return (
     <>
@@ -15,24 +16,37 @@ const Cart = () => {
       <input type="checkbox" id={cartCheckboxID} hidden />
 
       <aside className="cart">
-        <ul>
-          {cart.map((item) => (
-            <li key={item.id}>
-              <img src={item.thumbnail} alt={item.title} />
-              <div>
-                <strong>{item.title}</strong> - ${item.title}
-              </div>
-              <footer>
-                <small>Quantity: {item.quantity}</small>
-                <button onClick={() => addToCart(item)}>+</button>
-              </footer>
-            </li>
-          ))}
-        </ul>
+        {cart.length > 0 ? (
+          <>
+            <ul>
+              {cart.map((item) => (
+                <li key={item.id}>
+                  <img src={item.thumbnail} alt={item.title} />
+                  <div>
+                    <strong>{item.title}</strong> - ${item.price}
+                  </div>
+                  <footer>
+                    <button onClick={() => removeFromCart(item)}>🗑</button>
+                    <small>Quantity: {item.quantity}</small>
+                    <button
+                      disabled={item.quantity === 1}
+                      onClick={() => removeOneFromCart(item)}
+                    >
+                      -
+                    </button>
+                    <button onClick={() => addToCart(item)}>+</button>
+                  </footer>
+                </li>
+              ))}
+            </ul>
 
-        <button onClick={clearCart}>
-          <ClearCartIcon />
-        </button>
+            <button onClick={clearCart}>
+              <ClearCartIcon />
+            </button>
+          </>
+        ) : (
+          <p>Your cart is empty</p>
+        )}
       </aside>
     </>
   );
