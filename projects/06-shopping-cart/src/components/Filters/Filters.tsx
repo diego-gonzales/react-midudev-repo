@@ -8,14 +8,14 @@ const Filters = () => {
   const { filters, setFilters } = useFilters();
 
   const handleChangeRange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setFilters((prevState: any) => ({
+    setFilters((prevState) => ({
       ...prevState,
-      minPrice: event.target.value,
+      minPrice: Number(event.target.value),
     }));
   };
 
   const handleChangeSelect = (event: React.ChangeEvent<HTMLSelectElement>) => {
-    setFilters((prevState: any) => ({
+    setFilters((prevState) => ({
       ...prevState,
       category: event.target.value,
     }));

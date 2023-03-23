@@ -1,5 +1,4 @@
 import "./Footer.css";
-import { FiltersContext } from "../../contexts/FiltersContext";
 import { useFilters } from "../../hooks/useFilters";
 import { useCart } from "../../hooks/useCart";
 

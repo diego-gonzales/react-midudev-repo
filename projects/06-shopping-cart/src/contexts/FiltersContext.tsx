@@ -4,7 +4,22 @@ interface FiltersProviderProps {
   children: ReactNode;
 }
 
-export const FiltersContext = createContext<any>({});
+interface ProviderProps {
+  filters: {
+    category: string;
+    minPrice: number;
+  };
+  setFilters: React.Dispatch<
+    React.SetStateAction<{
+      category: string;
+      minPrice: number;
+    }>
+  >;
+}
+
+export const FiltersContext = createContext<ProviderProps | undefined>(
+  undefined
+);
 
 export const FiltersProvider = ({ children }: FiltersProviderProps) => {
   const [filters, setFilters] = useState({
