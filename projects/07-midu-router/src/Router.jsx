@@ -1,17 +1,18 @@
 import { useState, useEffect, Children } from "react";
 import { EVENTS } from "./consts";
 import { match } from "path-to-regexp";
+import { getCurrentPath } from "./utils";
 
 export function Router({
   children,
   routes = [],
   defaultComponent: DefaultComponent = () => <h1>Not Found</h1>,
 }) {
-  const [currentPath, setCurrentPath] = useState(window.location.pathname);
+  const [currentPath, setCurrentPath] = useState(getCurrentPath());
 
   useEffect(() => {
     const onLocationChange = () => {
-      setCurrentPath(window.location.pathname);
+      setCurrentPath(getCurrentPath());
     };
 
     // Escuchar el evento personalizado
@@ -31,7 +32,7 @@ export function Router({
     return child.type.name === "Route" ? child.props : null;
   });
 
-  const routesToUse = [...routes, ...routesFromChildren];
+  const routesToUse = routes.concat(routesFromChildren).filter(Boolean);
 
   const Page = routesToUse.find((route) => {
     if (route.path === currentPath) return true;
