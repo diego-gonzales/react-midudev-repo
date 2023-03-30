@@ -1,6 +1,6 @@
 import { EVENTS } from "./consts";
 
-export function navigate(path) {
+function navigate(path) {
   window.history.pushState({}, "", path);
   // Crear un evento personalizado para avisar a los componentes que el path ha cambiado
   const navigationEvent = new Event(EVENTS.PUSHSTATE);
@@ -9,7 +9,7 @@ export function navigate(path) {
 
 export function Link({ target, to, ...props }) {
   const handleClick = (e) => {
-    const isMainEvent = e.button === 0;
+    const isMainEvent = e.button === 0; // click izquierdo
     const isModifiedEvent = e.ctrlKey || e.metaKey || e.shiftKey || e.altKey;
     const isManageableEvent = target === undefined || target === "_self";
 
@@ -19,5 +19,5 @@ export function Link({ target, to, ...props }) {
     }
   };
 
-  return <a href={to} target={target} {...props} onClick={handleClick}></a>;
+  return <a onClick={handleClick} href={to} target={target} {...props} />;
 }

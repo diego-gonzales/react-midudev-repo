@@ -1,17 +1,37 @@
-import { Link, navigate } from "../Link";
+import { Link } from "../Link";
 
-export default function About() {
+const i18n = {
+  es: {
+    title: "Acerca de",
+    description: "Hola me llamo Diego y estoy creando un clon de React Router",
+    linkText: "Ir a Inicio",
+  },
+  en: {
+    title: "About",
+    description: "Hi my name is Diego and I'm creating a clone of React Router",
+    linkText: "Go to Home",
+  },
+};
+
+const useI18n = (lang) => {
+  return i18n[lang] || i18n.es;
+};
+
+export default function About({ routeParams }) {
+  const { lang } = routeParams;
+  const { title, description, linkText } = useI18n(lang);
+
   return (
     <>
-      <h1>About</h1>
+      <h1>{title}</h1>
       <div>
         <img
           src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQn3lM0queCIxu_5XXCo-bv95tjAIorzfDASA&usqp=CAU"
           alt="Foto de prueba"
         />
-        <p>Hola me llamo Diego y estoy creando un clon de React Router</p>
+        <p>{description}</p>
       </div>
-      <Link to="/">Ir a Inicio</Link>
+      <Link to="/">{linkText}</Link>
     </>
   );
 }

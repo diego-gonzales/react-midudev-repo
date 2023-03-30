@@ -1,32 +1,33 @@
-import { useEffect } from "react";
-import { useState } from "react";
+import { lazy, Suspense } from "react";
 import "./App.css";
-import { EVENTS } from "./consts";
-import About from "./pages/About";
-import Home from "./pages/Home";
+import { Route } from "./Route";
+import { Router } from "./Router";
+
+const Home = lazy(() => import("./pages/Home"));
+const About = lazy(() => import("./pages/About"));
+const Search = lazy(() => import("./pages/Search"));
+const PageNotFound = lazy(() => import("./pages/Page404"));
+
+const routes = [
+  {
+    path: "/search/:query",
+    component: Search,
+  },
+  {
+    path: "/:lang/about",
+    component: About,
+  },
+];
 
 function App() {
-  const [currentPath, setCurrentPath] = useState(window.location.pathname);
-
-  useEffect(() => {
-    const onLocationChange = () => {
-      setCurrentPath(window.location.pathname);
-    };
-
-    // Escuchar el evento personalizado
-    window.addEventListener(EVENTS.PUSHSTATE, onLocationChange);
-    window.addEventListener(EVENTS.POPSTATE, onLocationChange);
-
-    return () => {
-      window.removeEventListener(EVENTS.PUSHSTATE, onLocationChange);
-      window.removeEventListener(EVENTS.POPSTATE, onLocationChange);
-    };
-  }, []);
-
   return (
     <main>
-      {currentPath === "/" && <Home />}
-      {currentPath === "/about" && <About />}
+      <Suspense fallback={<p>Loading...</p>}>
+        <Router routes={routes} defaultComponent={PageNotFound}>
+          <Route path="/" component={Home} />
+          <Route path="/about" component={About} />
+        </Router>
+      </Suspense>
     </main>
   );
 }
