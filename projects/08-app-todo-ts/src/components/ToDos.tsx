@@ -1,13 +1,17 @@
-import { Todo } from "../types";
+import { Todo, TodoId } from "../types";
 import { ToDo } from "./ToDo";
 
 interface TodosProps {
   todos: Todo[];
-  onRemoveTodo: (id: number) => void;
-  onComplete: (id: number, completed: boolean) => void;
+  onRemoveTodo: ({ id }: TodoId) => void;
+  onComplete: ({ id }: TodoId, completed: boolean) => void;
 }
 
-export const ToDos: React.FC<TodosProps> = ({ todos, onRemoveTodo, onComplete }) => {
+export const ToDos: React.FC<TodosProps> = ({
+  todos,
+  onRemoveTodo,
+  onComplete,
+}) => {
   return (
     <ul className="todo-list">
       {todos.map((todo) => (
