@@ -1,1 +1,5 @@
 - [x] Inicializar proyecto con Vite
+- [ ] Poder editar el texto de un ToDo (Doble click)
+- [ ] Añadir animaciones con AutoAnimate
+- [ ] Pasar a Reducer
+- [ ] Sincronizar con un backend
