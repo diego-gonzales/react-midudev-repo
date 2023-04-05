@@ -1,35 +1,85 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+import { useState } from "react";
+import { ToDos } from "./components/ToDos";
+import { TodoFilter } from "./types";
+import { Footer } from "./components/Footer";
+import { TODO_FILTERS } from "./consts";
 
-function App() {
-  const [count, setCount] = useState(0)
+const mockData = [
+  {
+    id: 1,
+    title: "Todo 1",
+    completed: true,
+  },
+  {
+    id: 2,
+    title: "Todo 2",
+    completed: false,
+  },
+  {
+    id: 3,
+    title: "Todo 3",
+    completed: false,
+  },
+];
+
+const App: React.FC = () => {
+  const [todos, setTodos] = useState(mockData);
+  const [filterSelected, setFilterSelected] = useState<TodoFilter>(
+    TODO_FILTERS.ALL
+  );
+
+  const handleRemove = (id: number) => {
+    const newTodos = todos.filter((todo) => todo.id !== id);
+    setTodos(newTodos);
+  };
+
+  const handleComplete = (id: number, completed: boolean) => {
+    const newTodos = todos.map((todo) => {
+      if (todo.id === id) {
+        return {
+          ...todo,
+          completed,
+        };
+      }
+      return todo;
+    });
+    setTodos(newTodos);
+  };
+
+  const handleFilterChange = (filter: TodoFilter) => {
+    setFilterSelected(filter);
+  };
+
+  const activeCount = todos.filter((todo) => !todo.completed).length;
+  const completedCount = todos.filter((todo) => todo.completed).length;
+
+  const filteredTodos = todos.filter((todo) => {
+    if (filterSelected === TODO_FILTERS.ACTIVE) return !todo.completed;
+    if (filterSelected === TODO_FILTERS.COMPLETED) return todo.completed;
+    return todo;
+  });
+
+  const handleClearCompleted = () => {
+    const newTodos = todos.filter((todo) => !todo.completed);
+    setTodos(newTodos);
+  };
 
   return (
-    <div className="App">
-      <div>
-        <a href="https://vitejs.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://reactjs.org" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.tsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
+    <div className="todoapp">
+      <ToDos
+        todos={filteredTodos}
+        onRemoveTodo={handleRemove}
+        onComplete={handleComplete}
+      />
+      <Footer
+        filterSelected={filterSelected}
+        activeCount={activeCount}
+        completedCount={completedCount}
+        onClearCompleted={handleClearCompleted}
+        onFilterChange={handleFilterChange}
+      />
     </div>
-  )
-}
+  );
+};
 
-export default App
+export default App;
