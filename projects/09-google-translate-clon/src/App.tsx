@@ -1,35 +1,50 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+import "./App.css";
+import "bootstrap/dist/css/bootstrap.min.css";
+import { Container, Row, Col, Button } from "react-bootstrap";
+import { useStore } from "./hooks/useStore";
+import { AUTO_LANGUAGE } from "./consts";
+import { ArrowsIcon } from "./components/Icons";
+import { LanguageSelector } from "./components/LanguageSelector";
+import { FromLanguage } from "./types";
 
 function App() {
-  const [count, setCount] = useState(0)
+  const { fromLang, toLang, setFromLang, setToLang, interchangeLanguages } =
+    useStore();
 
   return (
-    <div className="App">
-      <div>
-        <a href="https://vitejs.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://reactjs.org" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.tsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </div>
-  )
+    <Container fluid>
+      <h1>Google Translate</h1>
+      <Row>
+        <Col>
+          <h2>From</h2>
+          <LanguageSelector
+            tipo="from"
+            value={fromLang}
+            onChangeLanguage={setFromLang}
+          />
+          {fromLang}
+        </Col>
+        <Col>
+          <Button
+            variant="link"
+            disabled={fromLang === AUTO_LANGUAGE}
+            onClick={interchangeLanguages}
+          >
+            <ArrowsIcon />
+          </Button>
+        </Col>
+        <Col>
+          <h2>To</h2>
+          <LanguageSelector
+            tipo="to"
+            value={toLang}
+            onChangeLanguage={setToLang}
+          />
+          {toLang}
+        </Col>
+      </Row>
+    </Container>
+  );
 }
 
-export default App
+export default App;
