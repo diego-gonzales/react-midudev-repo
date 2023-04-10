@@ -4,7 +4,7 @@ import { FromLanguage, Language } from "../types";
 
 export function useStore() {
   const [state, dispatch] = useReducer(reducer, initialState);
-  const { fromLang, toLang, originalText, translatedText } = state;
+  const { fromLang, toLang, originalText, translatedText, isLoading } = state;
 
   const interchangeLanguages = () => {
     dispatch({ type: "INTERCHANGE_LANGUAGES" });
@@ -36,5 +36,6 @@ export function useStore() {
     setToLang,
     setOriginalText,
     setTranslatedText,
+    isLoading
   };
 }

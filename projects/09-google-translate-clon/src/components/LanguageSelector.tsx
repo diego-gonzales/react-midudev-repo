@@ -1,18 +1,24 @@
 import { Form } from "react-bootstrap";
-import { SUPPORTED_LANGUAGES } from "../consts";
-import { FromLanguage, Language } from "../types";
+import { AUTO_LANGUAGE, SUPPORTED_LANGUAGES } from "../consts";
+import { FromLanguage, Language, SectionType } from "../types.d";
 
 // interface LanguageSelectorProps {
 //   onChangeLanguage: (lang: Language) => void;
 // }
 
+/* Creamos este type para que el componente LanguageSelector pueda recibir dos tipos de props diferentes,
+ dependiendo del tipo de sección que sea (From o To) */
 type LanguageSelectorProps =
   | {
-      tipo: "from";
+      tipo: SectionType.From;
       value: FromLanguage;
       onChangeLanguage: (lang: FromLanguage) => void;
     }
-  | { tipo: "to"; value: Language; onChangeLanguage: (lang: Language) => void };
+  | {
+      tipo: SectionType.To;
+      value: Language;
+      onChangeLanguage: (lang: Language) => void;
+    };
 
 export const LanguageSelector: React.FC<LanguageSelectorProps> = ({
   tipo,
@@ -29,7 +35,9 @@ export const LanguageSelector: React.FC<LanguageSelectorProps> = ({
       onChange={handleChange}
       value={value}
     >
-      {tipo === "from" && <option value="auto">Detect language</option>}
+      {tipo === SectionType.From && (
+        <option value={AUTO_LANGUAGE}>Detect language</option>
+      )}
       {Object.entries(SUPPORTED_LANGUAGES).map(([clave, valor]) => (
         <option key={clave} value={clave}>
           {valor}
