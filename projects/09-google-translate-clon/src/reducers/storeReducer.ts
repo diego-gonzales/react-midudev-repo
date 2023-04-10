@@ -1,5 +1,5 @@
-import { Action, State } from '../types';
-import { AUTO_LANGUAGE } from '../consts';
+import { Action, State } from "../types";
+import { AUTO_LANGUAGE } from "../consts";
 
 export const initialState: State = {
   fromLang: "auto",
@@ -23,23 +23,35 @@ export const reducer = (state: State, action: Action) => {
   }
 
   if (type === "SET_FROM_LANG") {
+    if (state.fromLang === action.payload) return state;
+    const loading = state.originalText !== "";
+
     return {
       ...state,
       fromLang: action.payload,
+      translatedText: "",
+      isLoading: loading,
     };
   }
 
   if (type === "SET_TO_LANG") {
+    if (state.toLang === action.payload) return state;
+    const loading = state.originalText !== "";
+
     return {
       ...state,
       toLang: action.payload,
+      translatedText: "",
+      isLoading: loading,
     };
   }
 
   if (type === "SET_ORIGINAL_TEXT") {
+    const loading = action.payload !== "";
+
     return {
       ...state,
-      isLoading: true,
+      isLoading: loading,
       originalText: action.payload,
       translatedText: "",
     };
