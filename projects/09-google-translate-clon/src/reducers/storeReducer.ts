@@ -14,11 +14,14 @@ export const reducer = (state: State, action: Action) => {
 
   if (type === "INTERCHANGE_LANGUAGES") {
     if (state.fromLang === AUTO_LANGUAGE) return state;
+    const loading = state.originalText !== "";
 
     return {
       ...state,
       fromLang: state.toLang,
       toLang: state.fromLang,
+      translatedText: "",
+      isLoading: loading,
     };
   }
 
@@ -47,7 +50,7 @@ export const reducer = (state: State, action: Action) => {
   }
 
   if (type === "SET_ORIGINAL_TEXT") {
-    const loading = action.payload !== "";
+    const loading = action.payload.trim() !== "";
 
     return {
       ...state,

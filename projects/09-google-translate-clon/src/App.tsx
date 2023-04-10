@@ -2,14 +2,15 @@ import "./App.css";
 import "bootstrap/dist/css/bootstrap.min.css";
 import { Container, Row, Col, Button } from "react-bootstrap";
 import { useStore } from "./hooks/useStore";
-import { AUTO_LANGUAGE } from "./consts";
-import { ArrowsIcon } from "./components/Icons";
+import { AUTO_LANGUAGE, VOICE_FOR_LANGUAGE } from "./consts";
+import { ArrowsIcon, ClipboardIcon, SpeakIcon } from "./components/Icons";
 import { LanguageSelector } from "./components/LanguageSelector";
 import { SectionType } from "./types.d";
 import { Stack } from "react-bootstrap";
 import { TextArea } from "./components/TextArea";
 import { useEffect } from "react";
 import { translate } from "./services/translate";
+import { useDebounce } from "./hooks/useDebounce";
 
 function App() {
   const {
@@ -25,16 +26,29 @@ function App() {
     isLoading,
   } = useStore();
 
-  useEffect(() => {
-    if (originalText.trim() === "") return;
+  // This is the hook that we are going to use to debounce the original text
+  const debounceFromOriginalText = useDebounce(originalText.trim(), 500);
 
-    translate(originalText, fromLang, toLang)
+  useEffect(() => {
+    if (debounceFromOriginalText === "") return;
+
+    translate(debounceFromOriginalText, fromLang, toLang)
       .then((result) => {
         if (result == null) return;
         setTranslatedText(result);
       })
       .catch((err) => console.error(err));
-  }, [originalText, fromLang, toLang]);
+  }, [debounceFromOriginalText, fromLang, toLang]);
+
+  const handleClipboardClick = () => {
+    navigator.clipboard.writeText(translatedText).catch(() => {});
+  };
+
+  const handleSpeak = () => {
+    const utterance = new SpeechSynthesisUtterance(translatedText);
+    utterance.lang = VOICE_FOR_LANGUAGE[toLang];
+    speechSynthesis.speak(utterance);
+  };
 
   return (
     <Container fluid>
@@ -72,12 +86,29 @@ function App() {
               value={toLang}
               onChangeLanguage={setToLang}
             />
-            <TextArea
-              tipo={SectionType.To}
-              valueText={translatedText}
-              onChangeText={setTranslatedText}
-              isLoading={isLoading}
-            />
+            <div style={{ position: "relative" }}>
+              <TextArea
+                tipo={SectionType.To}
+                valueText={translatedText}
+                onChangeText={setTranslatedText}
+                isLoading={isLoading}
+              />
+              <div
+                style={{
+                  position: "absolute",
+                  left: 0,
+                  bottom: 0,
+                  display: "flex",
+                }}
+              >
+                <Button variant="link" onClick={handleClipboardClick}>
+                  <ClipboardIcon />
+                </Button>
+                <Button variant="link" onClick={handleSpeak}>
+                  <SpeakIcon />
+                </Button>
+              </div>
+            </div>
           </Stack>
         </Col>
       </Row>

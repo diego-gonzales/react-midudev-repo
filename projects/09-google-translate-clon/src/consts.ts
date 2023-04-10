@@ -5,3 +5,9 @@ export const SUPPORTED_LANGUAGES = {
 };
 
 export const AUTO_LANGUAGE = "auto";
+
+export const VOICE_FOR_LANGUAGE = {
+  es: "es-ES",
+  en: "en-US",
+  de: "de-DE",
+};
