@@ -13,3 +13,5 @@
 - [x] Hacer un i18n con las rutas
 - [ ] Testing
 - [ ] Publicar el paquete en NPM
+
+- Colocar esto dentro del script 'prepare': 'npm run test && swc ./src/_.jsx -d lib && rm lib/App.js lib/main.js lib/Router.test.js && cp src/_.js lib' (Lo saqué ya que al ser un monorepo se ejecuta cada vez que se instala un paquete)
