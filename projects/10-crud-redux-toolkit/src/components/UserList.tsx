@@ -11,9 +11,12 @@ import {
 } from '@tremor/react';
 import { EditIcon, DeleteIcon } from './Icons';
 import { useUsers } from '../hooks/useUsers';
+import { UserWithId } from '../types';
+interface UserListProps {
+	setUserToEdit: (user: UserWithId) => void;
+}
 
-export default function UserList() {
-	// const users = useAppSelector((state) => state.users);
+export default function UserList({ setUserToEdit }: UserListProps) {
 	const { users, removeUser } = useUsers();
 
 	return (
@@ -45,7 +48,7 @@ export default function UserList() {
 							</TableCell>
 							<TableCell className="text-center">{item.email}</TableCell>
 							<TableCell className="text-center">
-								<button type="button">
+								<button type="button" onClick={() => setUserToEdit(item)}>
 									<EditIcon />
 								</button>
 								<button type="button" onClick={() => removeUser(item.id)}>

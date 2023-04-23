@@ -1,5 +1,5 @@
 import { PayloadAction, createSlice } from '@reduxjs/toolkit';
-import { User, UserId } from '../../types';
+import { User, UserId, UserWithId } from '../../types';
 
 const DEFAULT_STATE = [
 	{
@@ -22,7 +22,7 @@ const DEFAULT_STATE = [
 	},
 ];
 
-const initialState: User[] = (() => {
+const initialState: UserWithId[] = (() => {
 	const persistedState = localStorage.getItem('__redux__state__');
 	return persistedState ? JSON.parse(persistedState).users : DEFAULT_STATE;
 })();
@@ -41,7 +41,7 @@ const usersSlice = createSlice({
 			const id = action.payload;
 			return state.filter((user) => user.id !== id);
 		},
-		rollbackDeleteUser: (state, action: PayloadAction<User>) => {
+		rollbackDeleteUser: (state, action: PayloadAction<UserWithId>) => {
 			const userIsAlreadyInState = state.some(
 				(user) => user.id === action.payload.id,
 			);

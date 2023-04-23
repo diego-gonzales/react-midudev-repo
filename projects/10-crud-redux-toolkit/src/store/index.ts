@@ -1,6 +1,7 @@
 import { Middleware, configureStore } from '@reduxjs/toolkit';
 import usersReducer, { rollbackDeleteUser } from './users/slice';
 import { toast } from 'sonner';
+import { UserWithId } from '../types';
 
 const persistanceLocalStorageMiddleware: Middleware =
 	(store) => (next) => (action) => {
@@ -37,7 +38,7 @@ const syncWithDatabaseMiddleware: Middleware =
 		if (type === 'users/deleteUserById') {
 			const userIdToDelete = payload;
 			const userToDelete = previusState.users.find(
-				(user) => user.id === userIdToDelete,
+				(user: UserWithId) => user.id === userIdToDelete,
 			);
 
 			fetch(`https://jsonplaceholder.typicode.com/users/${userIdToDelete}`, {
