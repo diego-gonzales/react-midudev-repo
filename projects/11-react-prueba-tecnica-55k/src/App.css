@@ -1,0 +1,28 @@
+#root {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 2rem;
+  text-align: center;
+  width: 100%;
+}
+
+/* Otra forma de implementar el coloreado de rows de la tabla */
+.table-class tr:nth-child(even) {
+  background-color: blue;
+}
+
+.table-class tr:nth-child(odd) {
+  background-color: red;
+}
+
+header div {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 40px;
+}
+
+.pointer {
+  cursor: crosshair;
+}
