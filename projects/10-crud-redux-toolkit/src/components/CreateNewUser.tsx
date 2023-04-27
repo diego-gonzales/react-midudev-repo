@@ -20,6 +20,12 @@ export default function CreateNewUser({
 
 	const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
 		event.preventDefault();
+		// Another way to get the values from the form
+		// const formData = new FormData(event.currentTarget);
+		// const name = formData.get('name') as string;
+		// const email = formData.get('email') as string;
+		// const github = formData.get('github') as string;
+
 		const { name, email, github } = myForm;
 
 		if (name === '' || email === '' || github === '') {
