@@ -4,12 +4,14 @@ import App from './App.tsx'
 // import AppOld from './AppOld.tsx'
 import './index.css'
 import { QueryClientProvider, QueryClient } from '@tanstack/react-query'
+import { ReactQueryDevtools } from '@tanstack/react-query-devtools'
 
 const queryClient = new QueryClient()
 
 ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
   <QueryClientProvider client={queryClient}>
     <App />
+    <ReactQueryDevtools />
     {/* <AppOld /> */}
   </QueryClientProvider>
 )
