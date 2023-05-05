@@ -1,21 +1,20 @@
-import { useEffect, useMemo, useRef, useState } from 'react'
+import { useMemo, useState } from 'react'
 import './App.css'
 import { SortBy, type User } from './types.d'
 import { UsersList } from './components/UsersList'
+import { useUsers } from './hooks/useUsers'
+import { Results } from './components/Results'
+
+// 💛 WITH REACT QUERY
 
 function App() {
-  const [users, setUsers] = useState<User[]>([])
+  // 👀 hasNextPage: booleano que indica si hay más páginas para cargar
+  const { isLoading, isError, users, refetch, fetchNextPage, hasNextPage } =
+    useUsers()
+
   const [isColoringTable, setIsColoringTable] = useState(false)
   const [sorting, setSorting] = useState<SortBy>(SortBy.NONE)
   const [countryFilter, setCountryFilter] = useState<string | null>(null)
-  const originalUsers = useRef<User[]>([])
-  /* NOTA SUPER IMPORTANTE ✅: useRef() sirve para guardar un valor que queremos que se comparta entre renderizados (por más que cambien estados siempre se va a preservar lo que guardamos en su momento). Es muy parecido a un useState pero con 2 diferencias claves: 
-    1️⃣ Cada vez que un ref cambia, no se vuelve a renderizar el componente
-    2️⃣ Para acceder al valor de un ref, tenemos que usar la propiedad .current (ej: originalUsers.current)
-
-    (Ver https://www.twitch.tv/videos/1792623213 por el min 1:12:00 en adelante)
-  */
-  /* Es por eso que lo usamos en lugar de crear un nuevo estado */
 
   const toggleColoringTable = () => {
     setIsColoringTable(!isColoringTable)
@@ -28,65 +27,18 @@ function App() {
   }
 
   const handleDeleteUser = (uuid: string) => {
-    const newUsers = users.filter((user) => user.login.uuid !== uuid)
-    setUsers(newUsers)
+    // const newUsers = users.filter((user) => user.login.uuid !== uuid)
+    // setUsers(newUsers)
   }
 
-  const handleResetUsers = () => {
-    setUsers(originalUsers.current)
+  const handleResetUsers = async () => {
+    await refetch()
   }
 
   const handleChangeSorting = (sort: SortBy) => {
     setSorting(sort)
   }
 
-  useEffect(() => {
-    const url = 'https://randomuser.me/api?results=100'
-    fetch(url)
-      .then(async (response) => await response.json())
-      .then((data) => {
-        setUsers(data.results)
-        originalUsers.current = data.results
-      })
-      .catch((error) => {
-        console.log(error)
-      })
-  }, [])
-
-  // 🔆 Forma hecha en el vídeo de Midudev
-  // const filteredUsers = useMemo(() => {
-  //   console.log('calling filteredUsers')
-  //   return countryFilter !== null && countryFilter.length > 0
-  //     ? users.filter((user) =>
-  //         user.location.country
-  //           .toLowerCase()
-  //           .includes(countryFilter.toLowerCase())
-  //       )
-  //     : users
-  // }, [users, countryFilter])
-
-  // const sortedUsers = useMemo(() => {
-  //   console.log('calling sortedUsers')
-
-  //   if (sorting === SortBy.NONE) return filteredUsers
-
-  //   /* Lo siguiente también lo pudimos haber hecho con un 'switch', con 'if/else',
-  //   con un 'let sortedFn = (a: User, b: User) => a.location.country.localCompare(b.location.country) y un if', etc. */
-
-  //   // Esto es simplemente un objeto tipado: { [key: string]: (user: User) => any }
-  //   const compareProperties: Record<string, (user: User) => any> = {
-  //     [SortBy.COUNTRY]: (user) => user.location.country,
-  //     [SortBy.NAME]: (user) => user.name.first,
-  //     [SortBy.LASTNAME]: (user) => user.name.last,
-  //   }
-
-  //   return filteredUsers.toSorted((a, b) => {
-  //     const extractProperty = compareProperties[sorting]
-  //     return extractProperty(a).localeCompare(extractProperty(b))
-  //   })
-  // }, [filteredUsers, sorting])
-
-  // 🔆 Hice esta pequeña refactorización para que se cumpla con el criterio 9 de la prueba (Ver README.md)
   const sortedUsers = useMemo(() => {
     console.log('calling sortedUsers')
 
@@ -120,6 +72,9 @@ function App() {
       <header>
         <h1>Prueba técnica 55k</h1>
         <div>
+          <Results />
+        </div>
+        <div>
           <button onClick={toggleColoringTable}>
             {isColoringTable ? 'Not coloring table' : 'Coloring table'}
           </button>
@@ -128,7 +83,13 @@ function App() {
               ? 'Not sort by country'
               : 'Sort by country'}
           </button>
-          <button onClick={handleResetUsers}>Reset original users</button>
+          <button
+            onClick={() => {
+              void handleResetUsers()
+            }}
+          >
+            Reset original users
+          </button>
           <input
             type="text"
             placeholder="Filter by country"
@@ -139,12 +100,27 @@ function App() {
         </div>
       </header>
       <main>
-        <UsersList
-          users={filteredUsers}
-          isColoringTable={isColoringTable}
-          deleteUser={handleDeleteUser}
-          handleChangeSorting={handleChangeSorting}
-        />
+        {users.length > 0 && (
+          <UsersList
+            users={filteredUsers}
+            isColoringTable={isColoringTable}
+            deleteUser={handleDeleteUser}
+            handleChangeSorting={handleChangeSorting}
+          />
+        )}
+        {isLoading && <p>Loading...</p>}
+        {isError && <p>There was an error</p>}
+        {!isLoading && !isError && users.length === 0 && <p>No users found</p>}
+        {!isLoading && !isError && hasNextPage === true && (
+          <button
+            type="button"
+            onClick={() => {
+              void fetchNextPage()
+            }}
+          >
+            Load more results
+          </button>
+        )}
       </main>
     </>
   )
